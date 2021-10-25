@@ -15,7 +15,18 @@ type Cell struct {
 	bg   termbox.Attribute
 }
 
-func Print( ch <-chan *Cell){
+
+func newCell()*Cell{
+	cell := &Cell{}
+        cell.x = 0
+        cell.y = 0
+        cell.msg = "top - "
+        cell.fg = termbox.ColorDefault
+        cell.bg = termbox.ColorDefault
+        return cell
+}
+
+func printer( ch <-chan *Cell){
 	err := termbox.Init()
 
 	if err != nil {
