@@ -13,8 +13,14 @@ func main(){
 func sender(ch chan<- *Cell){
 	for ; ;{
 		cell := newCell()
-		cell.msg = top()
+		cell.msg = head()
 		ch<- cell
-		time.Sleep(3 * time.Second)
+
+
+		cell = newCell()
+		cell.msg = tasks()
+		cell.y = 1
+		ch <- cell
+		time.Sleep(1 * time.Second)
 	}
 }

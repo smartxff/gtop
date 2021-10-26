@@ -49,3 +49,25 @@ func loadavg()string{
 
 	return fmt.Sprintf("  load average: %s, %s, %s",lload[0],lload[1],lload[2])
 }
+
+func pidList()[]string {
+	lpid := make([]string,0)
+	dir_list, err := ioutil.ReadDir("/proc")
+        if err !=nil{
+                panic("read dir error")
+        }
+	for _,v := range dir_list {
+                name := v.Name()
+                if name[0] >= '1' && name[0] <= '9'{
+                	lpid = append(lpid,name)
+                }
+        }
+	return lpid
+
+}
+
+func pstat(pid string)[]string{
+	stat := string(readAll("/proc/"+pid+"/stat"))
+	return strings.Split(stat," ")
+}
+

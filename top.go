@@ -2,9 +2,13 @@ package main
 
 import "fmt"
 
-func top()string{
-	head :=  fmt.Sprintf("top - %s up%s,%s,%s\n",timeNow(),uptime(),userCount(),loadavg()) 
+func head()string{
+	return fmt.Sprintf("top - %s up%s,%s,%s\n",timeNow(),uptime(),userCount(),loadavg())
+}
 
-
-	return head
+func tasks()string{
+	pt := NewProcTab()
+        pt.Refresh()
+	return fmt.Sprintf("Tasks: %d total,   %d running, %d sleeping,   %d stopped,   %d zombie",
+		maxtask,running,sleepin,stopped,zombied)
 }

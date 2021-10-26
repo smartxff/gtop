@@ -19,3 +19,10 @@ func TestTimeNow(t *testing.T){
 func TestUserCount(t *testing.T){
 	t.Log(userCount())
 }
+
+func TestPidList(t *testing.T){
+	t.Log(pidList())
+}
+func TestPstat(t *testing.T){
+	t.Log(len(pstat("1")))
+}
