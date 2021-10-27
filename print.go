@@ -56,7 +56,10 @@ func handleEvent(){
                         if ev.Key == termbox.KeyCtrlC {
                                 termbox.Close()
                                 os.Exit(0)
-                        }
+                        }else if ev.Ch == '1' {
+				cpuDetail = !cpuDetail
+				gticker <- struct{}{}
+			}
 
                 case termbox.EventError:
                         panic(ev.Err)

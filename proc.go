@@ -71,3 +71,50 @@ func pstat(pid string)[]string{
 	return strings.Split(stat," ")
 }
 
+func onlineCPU()[]string{
+	cpus := make([]string,0)
+	onCPUs := string(readAll("/sys/devices/system/cpu/online"))
+	onCPUs = strings.TrimSpace(onCPUs)
+	lonCPUs := strings.Split(onCPUs,",")
+	for _,group := range lonCPUs{
+		se := strings.Split(group, "-")
+		start,err := strconv.Atoi(se[0])
+		if err !=nil{
+			panic(err)
+		}
+		end,err := strconv.Atoi(se[1])
+		if err !=nil{
+			panic(err)
+		}
+		for i := start; i<=end;i++{
+			cpus = append(cpus, fmt.Sprintf("cpu%d",i))
+		}
+	}
+	return cpus
+}
+
+func stat()[]string{
+	stat := string(readAll("/proc/stat"))
+	stat = strings.Replace(stat,"  "," ",-1)
+	return strings.Split(stat,"\n")
+}
+
+func statCPUTime()map[string][]int64{
+	ctimeStat := make(map[string][]int64)
+	st := stat()
+	onCpuCount := len(onlineCPU())
+	for i := 0; i <= onCpuCount; i++ {
+		cl := strings.Split(st[i]," ")
+		ctimes := make([]int64,0)
+		for _, t := range cl[1:]{
+			itime,err := strconv.ParseInt(t, 10, 64)
+			if err !=nil{
+				panic(err)
+			}
+			ctimes = append(ctimes, itime)
+		}
+		ctimeStat[cl[0]] = ctimes
+	}
+	return ctimeStat
+}
+

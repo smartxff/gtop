@@ -26,3 +26,9 @@ func TestPidList(t *testing.T){
 func TestPstat(t *testing.T){
 	t.Log(len(pstat("1")))
 }
+func TestOnlineCPU(t *testing.T){
+	t.Log(onlineCPU())
+}
+func TestStatCPUTime(t *testing.T){
+	t.Log(statCPUTime())
+}
