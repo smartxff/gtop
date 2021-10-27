@@ -19,28 +19,3 @@ func main(){
 	go run(ch)
 	printer(ch)
 }
-
-func run(ch chan<- *Cell){
-	gticker <- struct{}{}
-	for {
-		select {
-		case <- gticker:
-			sender(ch)
-			cpuSender(ch)
-		case <- ticker.C:
-			sender(ch)
-			cpuSender(ch)
-		}
-	}
-}
-func sender(ch chan<- *Cell){
-	cell := newCell()
-	cell.msg = head()
-	ch<- cell
-
-
-	cell = newCell()
-	cell.msg = tasks()
-	cell.y = 1
-	ch <- cell
-}

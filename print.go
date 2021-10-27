@@ -7,12 +7,20 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
+const (
+	DEFAULTOP	= iota
+	FLUSH
+	CLEAR
+)
+
+
 type Cell struct {
 	x    int
 	y    int
 	msg   string
 	fg   termbox.Attribute
 	bg   termbox.Attribute
+	op int
 }
 
 
@@ -23,6 +31,7 @@ func newCell()*Cell{
         cell.msg = "top - "
         cell.fg = termbox.ColorDefault
         cell.bg = termbox.ColorDefault
+	cell.op = DEFAULTOP
         return cell
 }
 
@@ -37,7 +46,13 @@ func printer( ch <-chan *Cell){
         go handleEvent()
 	for cell := range ch {
 		tbprint(cell.x, cell.y, cell.fg, cell.bg, cell.msg)
-		termbox.Flush()
+		switch cell.op{
+			case FLUSH:
+				termbox.Flush()
+			case CLEAR:
+				termbox.Clear(termbox.ColorDefault,termbox.ColorDefault)
+
+		}
 	}
 }
 
@@ -66,5 +81,44 @@ func handleEvent(){
 
                 }
         }
+}
+
+func run(ch chan<- *Cell){
+        gticker <- struct{}{}
+        for {
+		clear(ch)
+                select {
+                case <- gticker:
+                        sender(ch)
+                        cpuSender(ch)
+                case <- ticker.C:
+                        sender(ch)
+                        cpuSender(ch)
+                }
+                flush(ch)
+        }
+}
+func sender(ch chan<- *Cell){
+        cell := newCell()
+        cell.msg = head()
+        ch<- cell
+
+
+        cell = newCell()
+        cell.msg = tasks()
+        cell.y = 1
+        ch <- cell
+}
+
+func flush(ch chan<- *Cell){
+        cell := newCell()
+        cell.op = FLUSH
+        ch <- cell
+}
+
+func clear(ch chan<- *Cell){
+        cell := newCell()
+        cell.op = CLEAR
+        ch <- cell
 }
 
