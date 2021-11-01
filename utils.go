@@ -23,7 +23,7 @@ func FormatTime(second float32)string{
 	if days > 0{
 		return fmt.Sprintf(" %d days,  %d:%02d",days,hour,min)
 	}
-	return fmt.Sprintf("  %d:%02d",hour,min)
+	return fmt.Sprintf("%3d:%02d",hour,min)
 }
 
 func timeNow() string {

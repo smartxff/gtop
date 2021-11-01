@@ -91,9 +91,11 @@ func run(ch chan<- *Cell){
                 case <- gticker:
                         sender(ch)
                         cpuSender(ch)
+			memSender(ch)
                 case <- ticker.C:
                         sender(ch)
                         cpuSender(ch)
+			memSender(ch)
                 }
                 flush(ch)
         }
