@@ -1,7 +1,6 @@
 package main
 
 import (
-	"time"
 	"strings"
 	"fmt"
 )
@@ -21,8 +20,11 @@ const (
 
 var cpuDetail bool
 
+var cpuStat map[string][]int64
+
 func init(){
 	cpuDetail = false
+	cpuStat = statCPUTime()
 }
 
 
@@ -30,11 +32,9 @@ func init(){
 func cpus()map[string][]float32{
 	cpuUtil := make(map[string][]float32)
 
-	cpustime1 := statCPUTime()
-	time.Sleep(100 * time.Nanosecond * 1e6)
 	cpustime2 := statCPUTime()
-	for icpu,times := range cpustime1 {
-		c1 := cpustime1[icpu]
+	for icpu,times := range cpustime2 {
+		c1 := cpuStat[icpu]
 		c2 := cpustime2[icpu]
 		util := make([]float32,len(times))
 		var totle float32 = 0
@@ -45,11 +45,13 @@ func cpus()map[string][]float32{
 		for i,u := range util {
 			if totle == 0 {
 				util[i] = 0
+			}else {
+				util[i] = u/totle * 100
 			}
-			util[i] = u/totle * 100
 		}
 		cpuUtil[icpu] = util
 	}
+	cpuStat = cpustime2
 	return cpuUtil
 }
 func cpusFormat(cpus map[string][]float32)[]string{

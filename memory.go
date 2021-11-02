@@ -20,6 +20,9 @@ type Storage struct {
 func (s *Storage)MB()string{
 	return fmt.Sprintf("%.1f",float64(s.Size)/float64(MB))
 }
+func (s *Storage)Kb()int64{
+	return s.Size / KB
+}
 func (s *Storage)Add(ss *Storage)*Storage{
 	size := s.Size + ss.Size
 	storage := &Storage{Size: size}
